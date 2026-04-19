@@ -5,15 +5,175 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>QuestKit | Turn curiosity into play</title>
     <style>
-      :root { color-scheme: light; }
-      body { font-family: Inter, system-ui, Arial, sans-serif; margin: 0; background: #f8fafc; color: #0f172a; }
-      .wrap { max-width: 960px; margin: 0 auto; padding: 48px 20px; }
-      .hero { background: white; border-radius: 16px; padding: 28px; box-shadow: 0 10px 30px rgba(2,6,23,.08); }
-      h1 { margin: 0 0 8px; font-size: 2rem; }
-      .tag { color: #334155; margin-bottom: 18px; }
-      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 12px; margin-top: 20px; }
-      .card { background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 12px; padding: 12px; }
-      .pill { display:inline-block; background:#0f172a; color:white; padding:6px 10px; border-radius:999px; font-size:.8rem; }
+      :root {
+        color-scheme: light;
+        --bg: #f5f7fb;
+        --surface: #ffffff;
+        --surface-subtle: #f8faff;
+        --text: #0f172a;
+        --text-muted: #475569;
+        --line: #dbe3f0;
+        --brand-dark: #3730a3;
+        --shadow: 0 20px 45px rgba(15, 23, 42, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+        margin: 0;
+        background:
+          radial-gradient(circle at 90% 10%, rgba(79, 70, 229, 0.14), transparent 40%),
+          radial-gradient(circle at 10% 90%, rgba(56, 189, 248, 0.14), transparent 38%),
+          var(--bg);
+        color: var(--text);
+      }
+
+      .wrap {
+        max-width: 1140px;
+        margin: 0 auto;
+        padding: 64px 24px;
+      }
+
+      .hero {
+        background: linear-gradient(145deg, rgba(79, 70, 229, 0.95), rgba(30, 41, 59, 0.95));
+        color: #fff;
+        border-radius: 24px;
+        padding: 42px;
+        box-shadow: var(--shadow);
+      }
+
+      .pill {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        color: #e0e7ff;
+        padding: 7px 12px;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .hero h1 {
+        margin: 14px 0 10px;
+        font-size: clamp(2rem, 2.8vw, 2.8rem);
+        line-height: 1.12;
+      }
+
+      .tag {
+        margin: 0;
+        color: #e2e8f0;
+        max-width: 62ch;
+        font-size: 1.08rem;
+        line-height: 1.62;
+      }
+
+      .hero-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 24px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 16px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+      }
+
+      .btn.primary {
+        background: #fff;
+        color: var(--brand-dark);
+      }
+
+      .btn.secondary {
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.26);
+      }
+
+      .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.2);
+      }
+
+      .section-title {
+        margin: 38px 0 14px;
+        font-size: 1.15rem;
+        color: var(--text);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
+        margin-top: 0;
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 18px;
+        box-shadow: 0 10px 26px rgba(15, 23, 42, 0.05);
+      }
+
+      .card strong {
+        display: block;
+        font-size: 1.03rem;
+        margin-bottom: 8px;
+      }
+
+      .card p {
+        margin: 0;
+        color: var(--text-muted);
+        line-height: 1.5;
+      }
+
+      .stats {
+        margin-top: 18px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 10px;
+      }
+
+      .stat {
+        background: var(--surface-subtle);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 12px;
+      }
+
+      .stat .value {
+        display: block;
+        font-size: 1.2rem;
+        font-weight: 700;
+      }
+
+      .stat .label {
+        color: var(--text-muted);
+        font-size: 0.86rem;
+      }
+
+      @media (max-width: 700px) {
+        .wrap {
+          padding: 40px 16px;
+        }
+
+        .hero {
+          padding: 26px;
+          border-radius: 18px;
+        }
+      }
     </style>
   </head>
   <body>
@@ -24,13 +184,31 @@
         <p class="tag">
           A family learning engine that converts books, school topics, and random questions into playful learning rituals.
         </p>
-        <h2>Playable Modes</h2>
+        <div class="hero-actions">
+          <a class="btn primary" href="#modes">Explore modes</a>
+          <a class="btn secondary" href="#impact">See impact</a>
+        </div>
+      </section>
+
+      <section id="modes" aria-labelledby="modes-title">
+        <h2 class="section-title" id="modes-title">Playable Modes</h2>
         <div class="grid">
-          <article class="card"><strong>Quick Quiz</strong><p>Fast adaptive checks with hints.</p></article>
-          <article class="card"><strong>Car Trivia</strong><p>Voice-friendly rounds for rides.</p></article>
-          <article class="card"><strong>Scavenger Hunt</strong><p>Movement-based clue challenges.</p></article>
-          <article class="card"><strong>Mini Challenge</strong><p>Short mission cards and rematches.</p></article>
-          <article class="card"><strong>Chapter-to-Game</strong><p>Turn reading excerpts into mysteries.</p></article>
+          <article class="card"><strong>Quick Quiz</strong><p>Fast adaptive checks with nudges, confidence scoring, and kinder retries.</p></article>
+          <article class="card"><strong>Car Trivia</strong><p>Voice-friendly rounds built for short attention spans and hands-free family play.</p></article>
+          <article class="card"><strong>Scavenger Hunt</strong><p>Movement-based clue chains that connect home, outdoors, and school concepts.</p></article>
+          <article class="card"><strong>Mini Challenge</strong><p>Mission cards with timed rounds, streaks, and instant rematches.</p></article>
+          <article class="card"><strong>Chapter-to-Game</strong><p>Transform reading excerpts into mysteries, role-play prompts, and quiz arcs.</p></article>
+          <article class="card"><strong>Creator Studio</strong><p>Parents and teachers can generate custom quests from any topic in seconds.</p></article>
+        </div>
+      </section>
+
+      <section id="impact" aria-labelledby="impact-title">
+        <h2 class="section-title" id="impact-title">Why families keep coming back</h2>
+        <div class="stats">
+          <article class="stat"><span class="value">10 min</span><span class="label">average daily session</span></article>
+          <article class="stat"><span class="value">5 modes</span><span class="label">for different moments</span></article>
+          <article class="stat"><span class="value">Kid-first</span><span class="label">language and pacing</span></article>
+          <article class="stat"><span class="value">Reusable</span><span class="label">topics across subjects</span></article>
         </div>
       </section>
     </main>
