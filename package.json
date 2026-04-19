@@ -1,0 +1,13 @@
+{
+  "name": "quest-kit",
+  "private": true,
+  "version": "0.1.0",
+  "description": "QuestKit MVP web shell + deployment scripts",
+  "scripts": {
+    "deploy:vercel": "vercel --prod --yes",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.54.2"
+  }
+}
