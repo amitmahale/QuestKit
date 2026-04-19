@@ -125,6 +125,8 @@
         border-radius: 16px;
         padding: 18px;
         box-shadow: 0 10px 26px rgba(15, 23, 42, 0.05);
+        cursor: pointer;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
       }
 
       .card strong {
@@ -137,6 +139,34 @@
         margin: 0;
         color: var(--text-muted);
         line-height: 1.5;
+      }
+
+      .card:hover,
+      .card:focus-visible {
+        transform: translateY(-2px);
+        box-shadow: 0 14px 32px rgba(15, 23, 42, 0.1);
+      }
+
+      .card.active {
+        border-color: #4f46e5;
+        box-shadow: 0 14px 32px rgba(79, 70, 229, 0.2);
+      }
+
+      .mode-detail {
+        margin-top: 16px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 16px;
+      }
+
+      .mode-detail h3 {
+        margin: 0 0 8px;
+      }
+
+      .mode-detail p {
+        margin: 0;
+        color: var(--text-muted);
       }
 
       .stats {
@@ -193,12 +223,16 @@
       <section id="modes" aria-labelledby="modes-title">
         <h2 class="section-title" id="modes-title">Playable Modes</h2>
         <div class="grid">
-          <article class="card"><strong>Quick Quiz</strong><p>Fast adaptive checks with nudges, confidence scoring, and kinder retries.</p></article>
-          <article class="card"><strong>Car Trivia</strong><p>Voice-friendly rounds built for short attention spans and hands-free family play.</p></article>
-          <article class="card"><strong>Scavenger Hunt</strong><p>Movement-based clue chains that connect home, outdoors, and school concepts.</p></article>
-          <article class="card"><strong>Mini Challenge</strong><p>Mission cards with timed rounds, streaks, and instant rematches.</p></article>
-          <article class="card"><strong>Chapter-to-Game</strong><p>Transform reading excerpts into mysteries, role-play prompts, and quiz arcs.</p></article>
-          <article class="card"><strong>Creator Studio</strong><p>Parents and teachers can generate custom quests from any topic in seconds.</p></article>
+          <article class="card active" role="button" tabindex="0" data-mode="quick_quiz" aria-pressed="true"><strong>Quick Quiz</strong><p>Fast adaptive checks with nudges, confidence scoring, and kinder retries.</p></article>
+          <article class="card" role="button" tabindex="0" data-mode="car_trivia" aria-pressed="false"><strong>Car Trivia</strong><p>Voice-friendly rounds built for short attention spans and hands-free family play.</p></article>
+          <article class="card" role="button" tabindex="0" data-mode="scavenger_hunt" aria-pressed="false"><strong>Scavenger Hunt</strong><p>Movement-based clue chains that connect home, outdoors, and school concepts.</p></article>
+          <article class="card" role="button" tabindex="0" data-mode="mini_challenge" aria-pressed="false"><strong>Mini Challenge</strong><p>Mission cards with timed rounds, streaks, and instant rematches.</p></article>
+          <article class="card" role="button" tabindex="0" data-mode="chapter_to_game" aria-pressed="false"><strong>Chapter-to-Game</strong><p>Transform reading excerpts into mysteries, role-play prompts, and quiz arcs.</p></article>
+          <article class="card" role="button" tabindex="0" data-mode="creator_studio" aria-pressed="false"><strong>Creator Studio</strong><p>Parents and teachers can generate custom quests from any topic in seconds.</p></article>
+        </div>
+        <div class="mode-detail" id="mode-detail" aria-live="polite">
+          <h3 id="mode-title">Quick Quiz</h3>
+          <p id="mode-description">Fast adaptive checks with nudges, confidence scoring, and kinder retries.</p>
         </div>
       </section>
 
@@ -212,5 +246,61 @@
         </div>
       </section>
     </main>
+    <script>
+      const modeDetails = {
+        quick_quiz: {
+          title: "Quick Quiz",
+          description: "Fast adaptive checks with nudges, confidence scoring, and kinder retries."
+        },
+        car_trivia: {
+          title: "Car Trivia",
+          description: "Voice-friendly rounds built for short attention spans and hands-free family play."
+        },
+        scavenger_hunt: {
+          title: "Scavenger Hunt",
+          description: "Movement-based clue chains that connect home, outdoors, and school concepts."
+        },
+        mini_challenge: {
+          title: "Mini Challenge",
+          description: "Mission cards with timed rounds, streaks, and instant rematches."
+        },
+        chapter_to_game: {
+          title: "Chapter-to-Game",
+          description: "Transform reading excerpts into mysteries, role-play prompts, and quiz arcs."
+        },
+        creator_studio: {
+          title: "Creator Studio",
+          description: "Parents and teachers can generate custom quests from any topic in seconds."
+        }
+      };
+
+      const cards = document.querySelectorAll(".card[data-mode]");
+      const modeTitle = document.getElementById("mode-title");
+      const modeDescription = document.getElementById("mode-description");
+
+      const setActiveMode = (modeKey) => {
+        const detail = modeDetails[modeKey];
+        if (!detail) return;
+
+        modeTitle.textContent = detail.title;
+        modeDescription.textContent = detail.description;
+
+        cards.forEach((card) => {
+          const isActive = card.dataset.mode === modeKey;
+          card.classList.toggle("active", isActive);
+          card.setAttribute("aria-pressed", String(isActive));
+        });
+      };
+
+      cards.forEach((card) => {
+        card.addEventListener("click", () => setActiveMode(card.dataset.mode));
+        card.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            setActiveMode(card.dataset.mode);
+          }
+        });
+      });
+    </script>
   </body>
 </html>
