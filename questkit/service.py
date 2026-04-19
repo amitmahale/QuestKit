@@ -24,6 +24,8 @@ class LearningService:
         self._memory = MemoryEngine()
 
     def register_child(self, profile: ChildProfile) -> None:
+        if profile.child_id in self._profiles:
+            raise ValueError(f"child_id already registered: {profile.child_id}")
         self._profiles[profile.child_id] = profile
 
     def get_child(self, child_id: str) -> ChildProfile:
@@ -58,8 +60,8 @@ class LearningService:
             topic=activity.topic,
             mode=activity.mode,
             completed_on=completed_on or date.today(),
-            score=score,
-            hint_uses=hint_uses,
+            score=self._validated_score(score),
+            hint_uses=self._validated_hint_uses(hint_uses),
         )
         self._memory.record_session(session)
         return session
@@ -76,3 +78,13 @@ class LearningService:
 
     def get_adjacent_topic_suggestions(self, child_id: str) -> list[str]:
         return self._memory.adjacent_topic_suggestions(child_id)
+
+    def _validated_score(self, score: float) -> float:
+        if not 0 <= score <= 1:
+            raise ValueError("score must be in range [0, 1]")
+        return score
+
+    def _validated_hint_uses(self, hint_uses: int) -> int:
+        if hint_uses < 0:
+            raise ValueError("hint_uses must be non-negative")
+        return hint_uses

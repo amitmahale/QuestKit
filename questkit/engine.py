@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from hashlib import md5
+import re
 from typing import List
 
 from .models import Activity, ChildProfile, GameMode, GenerationRequest, Question
@@ -12,6 +13,7 @@ class GenerationContext:
     difficulty: int
     question_count: int
     energy_level: str
+    source_facts: list[str]
 
 
 class ActivityEngine:
@@ -66,10 +68,15 @@ class ActivityEngine:
         if request.suppress_chaos:
             energy_level = "calm"
 
+        source_facts = self._extract_source_facts(request)
+        if request.educational_weight >= 0.8 and source_facts:
+            base_count = min(14, base_count + 1)
+
         return GenerationContext(
             difficulty=difficulty,
             question_count=base_count,
             energy_level=energy_level,
+            source_facts=source_facts,
         )
 
     def _build_questions(self, request: GenerationRequest, ctx: GenerationContext) -> List[Question]:
@@ -84,19 +91,17 @@ class ActivityEngine:
 
         questions: List[Question] = []
         for idx in range(1, ctx.question_count + 1):
-            stem = f"{prompt_prefix} {idx}: What is one key idea about {request.topic}?"
-            options = [
-                f"Core concept #{idx}",
-                f"Trick answer #{idx}",
-                f"Related detail #{idx}",
-                f"Wild guess #{idx}",
-            ]
+            source_fact = ctx.source_facts[(idx - 1) % len(ctx.source_facts)] if ctx.source_facts else None
+            stem = self._question_stem(prompt_prefix, idx, request.topic, source_fact, request.solo_mode)
+            options = self._options_for_question(idx, request.topic, source_fact)
 
             hint = self._hint_for_mode(request.mode, request.topic, idx)
             explanation = (
                 f"This connects {request.topic} to a real-world example and reinforces"
                 " recall through short repetition."
             )
+            if source_fact:
+                explanation = f"Anchor fact: {source_fact}. " + explanation
             questions.append(
                 Question(
                     prompt=stem,
@@ -108,6 +113,44 @@ class ActivityEngine:
             )
 
         return questions
+
+    def _question_stem(
+        self,
+        prompt_prefix: str,
+        idx: int,
+        topic: str,
+        source_fact: str | None,
+        solo_mode: bool,
+    ) -> str:
+        if source_fact:
+            if solo_mode:
+                return (
+                    f"{prompt_prefix} {idx}: Read this clue — '{source_fact}'. "
+                    f"What does it teach you about {topic}?"
+                )
+            return (
+                f"{prompt_prefix} {idx}: Using the clue '{source_fact}', "
+                f"share one key idea about {topic}."
+            )
+
+        if solo_mode:
+            return f"{prompt_prefix} {idx}: On your own, explain one key idea about {topic}."
+        return f"{prompt_prefix} {idx}: What is one key idea about {topic}?"
+
+    def _options_for_question(self, idx: int, topic: str, source_fact: str | None) -> list[str]:
+        if source_fact:
+            return [
+                f"It matches this fact: {source_fact}",
+                f"It says the opposite of the clue",
+                f"It is unrelated to {topic}",
+                f"It is just a random guess",
+            ]
+        return [
+            f"Core concept #{idx}",
+            f"Trick answer #{idx}",
+            f"Related detail #{idx}",
+            f"Wild guess #{idx}",
+        ]
 
     def _hint_for_mode(self, mode: GameMode, topic: str, idx: int) -> str:
         if mode == GameMode.CAR_TRIVIA:
@@ -139,7 +182,7 @@ class ActivityEngine:
         return intros[mode]
 
     def _parent_notes(self, request: GenerationRequest, ctx: GenerationContext) -> list[str]:
-        return [
+        notes = [
             f"Difficulty calibrated to {ctx.difficulty}/5.",
             f"Estimated rounds: {ctx.question_count}.",
             (
@@ -153,6 +196,11 @@ class ActivityEngine:
                 else "Output favors playful momentum."
             ),
         ]
+        if ctx.source_facts:
+            notes.append(f"Using {len(ctx.source_facts)} source-based clue(s) from provided text.")
+        if request.solo_mode:
+            notes.append("Prompts are phrased for independent play.")
+        return notes
 
     def _kid_encouragement(self, energy_level: str, calm: bool) -> list[str]:
         if calm:
@@ -178,3 +226,13 @@ class ActivityEngine:
     def _activity_id(self, child_id: str, topic: str, mode: str) -> str:
         digest = md5(f"{child_id}:{topic}:{mode}".encode("utf-8")).hexdigest()[:12]
         return f"act_{digest}"
+
+    def _extract_source_facts(self, request: GenerationRequest) -> list[str]:
+        if not request.source_text:
+            return []
+
+        fragments = re.split(r"[.!?\n]+", request.source_text)
+        cleaned = [segment.strip() for segment in fragments if segment.strip()]
+        if not cleaned:
+            return []
+        return cleaned[:6]

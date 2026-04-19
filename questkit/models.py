@@ -38,6 +38,16 @@ class ChildProfile:
     attention_span_minutes: int = 10
     calm_ui: bool = True
 
+    def __post_init__(self) -> None:
+        if self.age < 4 or self.age > 18:
+            raise ValueError("age must be between 4 and 18")
+        if self.attention_span_minutes <= 0:
+            raise ValueError("attention_span_minutes must be positive")
+        if not self.name.strip():
+            raise ValueError("name cannot be empty")
+        if not self.child_id.strip():
+            raise ValueError("child_id cannot be empty")
+
 
 @dataclass
 class GenerationRequest:
@@ -52,6 +62,16 @@ class GenerationRequest:
     voice_enabled: bool = False
     educational_weight: float = 0.5
     suppress_chaos: bool = True
+
+    def __post_init__(self) -> None:
+        if self.duration_minutes <= 0:
+            raise ValueError("duration_minutes must be positive")
+        if not 1 <= self.difficulty <= 5:
+            raise ValueError("difficulty must be in range [1, 5]")
+        if not 0 <= self.educational_weight <= 1:
+            raise ValueError("educational_weight must be in range [0, 1]")
+        if self.source_type != SourceType.TOPIC and not (self.source_text and self.source_text.strip()):
+            raise ValueError("source_text is required when source_type is CHAPTER or EXCERPT")
 
 
 @dataclass

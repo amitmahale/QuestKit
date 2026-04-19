@@ -1,7 +1,14 @@
 from datetime import date
 import unittest
 
-from questkit import ChildProfile, FamilyStyle, GameMode, GenerationRequest, LearningService
+from questkit import (
+    ChildProfile,
+    FamilyStyle,
+    GameMode,
+    GenerationRequest,
+    LearningService,
+    SourceType,
+)
 
 
 class LearningServiceTests(unittest.TestCase):
@@ -85,6 +92,50 @@ class LearningServiceTests(unittest.TestCase):
         adjacent = self.service.get_adjacent_topic_suggestions("kid-1")
         self.assertIn("tides", adjacent)
         self.assertIn("eclipses", adjacent)
+
+    def test_source_text_is_used_for_question_prompts(self) -> None:
+        request = GenerationRequest(
+            child_id="kid-1",
+            topic="Volcanoes",
+            mode=GameMode.CHAPTER_TO_GAME,
+            duration_minutes=6,
+            difficulty=3,
+            source_type=SourceType.EXCERPT,
+            source_text="Magma rises through cracks. Pressure builds before eruption.",
+            solo_mode=True,
+            educational_weight=0.9,
+        )
+        activity = self.service.generate_activity(request)
+
+        self.assertTrue(any("Magma rises through cracks" in q.prompt for q in activity.questions))
+        self.assertTrue(any("independent play" in note.lower() for note in activity.parent_notes))
+        self.assertTrue(any("source-based clue" in note.lower() for note in activity.parent_notes))
+
+    def test_validates_activity_completion_inputs(self) -> None:
+        request = GenerationRequest(
+            child_id="kid-1",
+            topic="Fractions",
+            mode=GameMode.QUICK_QUIZ,
+            duration_minutes=5,
+            difficulty=2,
+        )
+        activity = self.service.generate_activity(request)
+
+        with self.assertRaises(ValueError):
+            self.service.complete_activity(
+                child_id="kid-1",
+                activity_id=activity.activity_id,
+                score=1.3,
+                hint_uses=0,
+            )
+
+        with self.assertRaises(ValueError):
+            self.service.complete_activity(
+                child_id="kid-1",
+                activity_id=activity.activity_id,
+                score=0.7,
+                hint_uses=-1,
+            )
 
 
 if __name__ == "__main__":
