@@ -5,302 +5,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>QuestKit | Turn curiosity into play</title>
     <style>
-      :root {
-        color-scheme: light;
-        --bg: #f5f7fb;
-        --surface: #ffffff;
-        --surface-subtle: #f8faff;
-        --text: #0f172a;
-        --text-muted: #475569;
-        --line: #dbe3f0;
-        --brand-dark: #3730a3;
-        --shadow: 0 20px 45px rgba(15, 23, 42, 0.12);
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-        margin: 0;
-        background:
-          radial-gradient(circle at 90% 10%, rgba(79, 70, 229, 0.14), transparent 40%),
-          radial-gradient(circle at 10% 90%, rgba(56, 189, 248, 0.14), transparent 38%),
-          var(--bg);
-        color: var(--text);
-      }
-
-      .wrap {
-        max-width: 1140px;
-        margin: 0 auto;
-        padding: 64px 24px;
-      }
-
-      .hero {
-        background: linear-gradient(145deg, rgba(79, 70, 229, 0.95), rgba(30, 41, 59, 0.95));
-        color: #fff;
-        border-radius: 24px;
-        padding: 42px;
-        box-shadow: var(--shadow);
-      }
-
-      .pill {
-        display: inline-block;
-        background: rgba(255, 255, 255, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.35);
-        color: #e0e7ff;
-        padding: 7px 12px;
-        border-radius: 999px;
-        font-size: 0.78rem;
-        font-weight: 600;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-      }
-
-      .hero h1 {
-        margin: 14px 0 10px;
-        font-size: clamp(2rem, 2.8vw, 2.8rem);
-        line-height: 1.12;
-      }
-
-      .tag {
-        margin: 0;
-        color: #e2e8f0;
-        max-width: 62ch;
-        font-size: 1.08rem;
-        line-height: 1.62;
-      }
-
-      .hero-actions {
-        display: flex;
-        gap: 12px;
-        margin-top: 24px;
-        flex-wrap: wrap;
-      }
-
-      .btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 10px 16px;
-        border-radius: 10px;
-        text-decoration: none;
-        font-weight: 600;
-        transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
-      }
-
-      .btn.primary {
-        background: #fff;
-        color: var(--brand-dark);
-      }
-
-      .btn.secondary {
-        background: rgba(255, 255, 255, 0.08);
-        color: #fff;
-        border: 1px solid rgba(255, 255, 255, 0.26);
-      }
-
-      .btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.2);
-      }
-
-      .section-title {
-        margin: 38px 0 14px;
-        font-size: 1.15rem;
-        color: var(--text);
-      }
-
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 16px;
-        margin-top: 0;
-      }
-
-      .card {
-        background: var(--surface);
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        padding: 18px;
-        box-shadow: 0 10px 26px rgba(15, 23, 42, 0.05);
-        cursor: pointer;
-        transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-      }
-
-      .card strong {
-        display: block;
-        font-size: 1.03rem;
-        margin-bottom: 8px;
-      }
-
-      .card p {
-        margin: 0;
-        color: var(--text-muted);
-        line-height: 1.5;
-      }
-
-      .card:hover,
-      .card:focus-visible {
-        transform: translateY(-2px);
-        box-shadow: 0 14px 32px rgba(15, 23, 42, 0.1);
-      }
-
-      .card.active {
-        border-color: #4f46e5;
-        box-shadow: 0 14px 32px rgba(79, 70, 229, 0.2);
-      }
-
-      .mode-detail {
-        margin-top: 16px;
-        background: var(--surface);
-        border: 1px solid var(--line);
-        border-radius: 14px;
-        padding: 16px;
-      }
-
-      .mode-detail h3 {
-        margin: 0 0 8px;
-      }
-
-      .mode-detail p {
-        margin: 0;
-        color: var(--text-muted);
-      }
-
-      .stats {
-        margin-top: 18px;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 10px;
-      }
-
-      .stat {
-        background: var(--surface-subtle);
-        border: 1px solid var(--line);
-        border-radius: 12px;
-        padding: 12px;
-      }
-
-      .stat .value {
-        display: block;
-        font-size: 1.2rem;
-        font-weight: 700;
-      }
-
-      .stat .label {
-        color: var(--text-muted);
-        font-size: 0.86rem;
-      }
-
-      @media (max-width: 700px) {
-        .wrap {
-          padding: 40px 16px;
-        }
-
-        .hero {
-          padding: 26px;
-          border-radius: 18px;
-        }
-      }
+      body { font-family: Inter, system-ui, sans-serif; margin: 0; background: #f6f8fc; color: #0f172a; }
+      .wrap { max-width: 1050px; margin: 0 auto; padding: 28px 16px 60px; }
+      .hero { background: linear-gradient(130deg,#4f46e5,#1e293b); color: #fff; border-radius: 16px; padding: 22px; }
+      .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; margin-top:12px; }
+      .card,.panel { background:#fff; border:1px solid #dbe3f0; border-radius:12px; padding:14px; }
+      .card { cursor:pointer; }
+      .card.active { border-color:#4f46e5; box-shadow:0 8px 20px rgba(79,70,229,.2); }
+      form { display:grid; gap:8px; }
+      input,select,textarea,button { border:1px solid #cbd5e1; border-radius:8px; padding:8px 10px; font:inherit; }
+      button { background:#4f46e5; color:#fff; border-color:#4338ca; cursor:pointer; }
+      button:hover { opacity:.94; }
+      .two { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px; }
+      .muted { color:#475569; font-size:.95rem; }
+      pre { background:#0f172a; color:#e2e8f0; padding:12px; border-radius:10px; overflow:auto; }
+      @media (max-width: 760px){ .two { grid-template-columns:1fr; } }
     </style>
   </head>
   <body>
     <main class="wrap">
       <section class="hero">
-        <span class="pill">QuestKit MVP</span>
         <h1>Turn curiosity into play.</h1>
-        <p class="tag">
-          A family learning engine that converts books, school topics, and random questions into playful learning rituals.
-        </p>
-        <div class="hero-actions">
-          <a class="btn primary" href="#modes">Explore modes</a>
-          <a class="btn secondary" href="#impact">See impact</a>
+        <p>QuestKit now ships as a full app: register a child, generate activities, complete rounds, and view memory-based callbacks.</p>
+      </section>
+
+      <h2>Playable Modes</h2>
+      <div class="grid" id="mode-grid"></div>
+      <div class="panel" id="mode-detail"><strong>Mode details</strong><p class="muted" id="mode-description"></p></div>
+
+      <section class="two">
+        <div class="panel">
+          <h3>1) Register child</h3>
+          <form id="profile-form">
+            <input name="child_id" placeholder="Child ID (ex: kid-1)" required />
+            <input name="name" placeholder="Name" required />
+            <input name="age" type="number" min="4" max="18" value="10" required />
+            <input name="reading_level" value="independent" required />
+            <button type="submit">Register</button>
+          </form>
+          <p class="muted" id="profile-status"></p>
+        </div>
+
+        <div class="panel">
+          <h3>2) Generate activity</h3>
+          <form id="activity-form">
+            <input name="child_id" value="kid-1" required />
+            <input name="topic" placeholder="Topic (ex: Moon phases)" required />
+            <select name="mode" id="mode-select"></select>
+            <input name="duration_minutes" type="number" value="8" min="1" />
+            <input name="difficulty" type="number" value="3" min="1" max="5" />
+            <button type="submit">Generate</button>
+          </form>
         </div>
       </section>
 
-      <section id="modes" aria-labelledby="modes-title">
-        <h2 class="section-title" id="modes-title">Playable Modes</h2>
-        <div class="grid">
-          <article class="card active" role="button" tabindex="0" data-mode="quick_quiz" aria-pressed="true"><strong>Quick Quiz</strong><p>Fast adaptive checks with nudges, confidence scoring, and kinder retries.</p></article>
-          <article class="card" role="button" tabindex="0" data-mode="car_trivia" aria-pressed="false"><strong>Car Trivia</strong><p>Voice-friendly rounds built for short attention spans and hands-free family play.</p></article>
-          <article class="card" role="button" tabindex="0" data-mode="scavenger_hunt" aria-pressed="false"><strong>Scavenger Hunt</strong><p>Movement-based clue chains that connect home, outdoors, and school concepts.</p></article>
-          <article class="card" role="button" tabindex="0" data-mode="mini_challenge" aria-pressed="false"><strong>Mini Challenge</strong><p>Mission cards with timed rounds, streaks, and instant rematches.</p></article>
-          <article class="card" role="button" tabindex="0" data-mode="chapter_to_game" aria-pressed="false"><strong>Chapter-to-Game</strong><p>Transform reading excerpts into mysteries, role-play prompts, and quiz arcs.</p></article>
-          <article class="card" role="button" tabindex="0" data-mode="creator_studio" aria-pressed="false"><strong>Creator Studio</strong><p>Parents and teachers can generate custom quests from any topic in seconds.</p></article>
+      <section class="two">
+        <div class="panel">
+          <h3>3) Complete activity</h3>
+          <form id="complete-form">
+            <input name="child_id" value="kid-1" required />
+            <input name="activity_id" id="activity-id" placeholder="activity id from generation" required />
+            <input name="score" type="number" step="0.1" min="0" max="1" value="0.8" />
+            <input name="hint_uses" type="number" min="0" value="1" />
+            <button type="submit">Complete session</button>
+          </form>
         </div>
-        <div class="mode-detail" id="mode-detail" aria-live="polite">
-          <h3 id="mode-title">Quick Quiz</h3>
-          <p id="mode-description">Fast adaptive checks with nudges, confidence scoring, and kinder retries.</p>
+
+        <div class="panel">
+          <h3>4) Progress + callbacks</h3>
+          <form id="progress-form">
+            <input name="child_id" value="kid-1" required />
+            <button type="submit">Refresh progress</button>
+          </form>
         </div>
       </section>
 
-      <section id="impact" aria-labelledby="impact-title">
-        <h2 class="section-title" id="impact-title">Why families keep coming back</h2>
-        <div class="stats">
-          <article class="stat"><span class="value">10 min</span><span class="label">average daily session</span></article>
-          <article class="stat"><span class="value">5 modes</span><span class="label">for different moments</span></article>
-          <article class="stat"><span class="value">Kid-first</span><span class="label">language and pacing</span></article>
-          <article class="stat"><span class="value">Reusable</span><span class="label">topics across subjects</span></article>
-        </div>
-      </section>
+      <h3>Live output</h3>
+      <pre id="output">Ready.</pre>
     </main>
-    <script>
-      const modeDetails = {
-        quick_quiz: {
-          title: "Quick Quiz",
-          description: "Fast adaptive checks with nudges, confidence scoring, and kinder retries."
-        },
-        car_trivia: {
-          title: "Car Trivia",
-          description: "Voice-friendly rounds built for short attention spans and hands-free family play."
-        },
-        scavenger_hunt: {
-          title: "Scavenger Hunt",
-          description: "Movement-based clue chains that connect home, outdoors, and school concepts."
-        },
-        mini_challenge: {
-          title: "Mini Challenge",
-          description: "Mission cards with timed rounds, streaks, and instant rematches."
-        },
-        chapter_to_game: {
-          title: "Chapter-to-Game",
-          description: "Transform reading excerpts into mysteries, role-play prompts, and quiz arcs."
-        },
-        creator_studio: {
-          title: "Creator Studio",
-          description: "Parents and teachers can generate custom quests from any topic in seconds."
-        }
-      };
-
-      const cards = document.querySelectorAll(".card[data-mode]");
-      const modeTitle = document.getElementById("mode-title");
-      const modeDescription = document.getElementById("mode-description");
-
-      const setActiveMode = (modeKey) => {
-        const detail = modeDetails[modeKey];
-        if (!detail) return;
-
-        modeTitle.textContent = detail.title;
-        modeDescription.textContent = detail.description;
-
-        cards.forEach((card) => {
-          const isActive = card.dataset.mode === modeKey;
-          card.classList.toggle("active", isActive);
-          card.setAttribute("aria-pressed", String(isActive));
-        });
-      };
-
-      cards.forEach((card) => {
-        card.addEventListener("click", () => setActiveMode(card.dataset.mode));
-        card.addEventListener("keydown", (event) => {
-          if (event.key === "Enter" || event.key === " ") {
-            event.preventDefault();
-            setActiveMode(card.dataset.mode);
-          }
-        });
-      });
-    </script>
+    <script src="/app.js"></script>
   </body>
 </html>
